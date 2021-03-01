@@ -79,7 +79,7 @@ export default {
 
       loader.load(this.modelPath, (gltf) => {
         this.model = gltf.scene
-        // const fileAnimations = gltf.animations
+        const fileAnimations = gltf.animations
 
         this.model.traverse(o => {
           if (o.isMesh) {
@@ -94,6 +94,13 @@ export default {
         this.scene.add(this.model)
 
         this.loading = false
+
+        this.mixer = new THREE.AnimationMixer(this.model)
+
+        const idleAnim = THREE.AnimationClip.findByName(fileAnimations, 'idle')
+
+        const idle = this.mixer.clipAction(idleAnim)
+        idle.play()
       },
       undefined,
       (error) => {
@@ -140,6 +147,9 @@ export default {
     },
 
     update () {
+      if (this.mixer) {
+        this.mixer.update(this.clock.getDelta())
+      }
       if (this.resizeRendererToDisplaySize(this.renderer)) {
         const canvas = this.$refs.canvas
         this.camera.aspect = canvas.clientWidth / canvas.clientHeight
