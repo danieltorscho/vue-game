@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="page">
     <character
       name="Character #1"
       model-path="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1376484/stacy_lightweight.glb"
