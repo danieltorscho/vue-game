@@ -1,6 +1,6 @@
 <template>
-  <div class="hello">
-    <h1>{{ name }}</h1>
+  <div class="character">
+    <div class="title">{{ name }}</div>
     <canvas id="canvas" ref="canvas"></canvas>
     <div v-if="loading" class="loading"><div class="loader"></div></div>
   </div>
@@ -156,6 +156,7 @@ export default {
       if (this.mixer) {
         this.mixer.update(this.clock.getDelta())
       }
+
       if (this.resizeRendererToDisplaySize(this.renderer)) {
         const canvas = this.$refs.canvas
         this.camera.aspect = canvas.clientWidth / canvas.clientHeight
@@ -168,6 +169,7 @@ export default {
 
     resizeRendererToDisplaySize (renderer) {
       const canvas = this.$refs.canvas
+
       if (canvas.width && canvas.height) {
         const width = window.innerWidth
         const height = window.innerHeight
@@ -178,7 +180,7 @@ export default {
         const needResize = canvasPxWidth !== width || canvasPxHeight !== height
 
         if (needResize) {
-          this.renderer.setSize(width, height, false)
+          this.renderer.setSize(width / window.devicePixelRatio, height / window.devicePixelRatio, false)
         }
 
         return needResize
@@ -203,8 +205,8 @@ export default {
 
     moveJoint (mouse, joint, degreeLimit) {
       const degrees = this.getMouseDegrees(mouse.x, mouse.y, degreeLimit)
-      joint.rotation.x = THREE.Math.degToRad(degrees.y)
       joint.rotation.y = THREE.Math.degToRad(degrees.x)
+      joint.rotation.x = THREE.Math.degToRad(degrees.y)
     },
 
     getMouseDegrees (x, y, degreeLimit) {
@@ -262,9 +264,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#canvas {
-  border: 5px solid #ccc;
+.character {
+  position: relative;
+  .title {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 }
+
 .loading {
   position: fixed;
   z-index: 50;

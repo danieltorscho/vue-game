@@ -9,24 +9,31 @@
 </template>
 
 <style lang="scss">
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   color: #2c3e50;
-  text-align: center;
   margin: 0;
   padding: 0;
 }
 
 #nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    text-decoration: none;
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
 }
 </style>
