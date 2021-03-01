@@ -127,6 +127,14 @@ export default {
       floor.receiveShadow = true
       floor.position.y = -11
       this.scene.add(floor)
+
+      const geometry = new THREE.SphereGeometry(8, 32, 32)
+      const material = new THREE.MeshBasicMaterial({ color: 0x9bffaf })
+      const sphere = new THREE.Mesh(geometry, material)
+      sphere.position.x = -0.25
+      sphere.position.y = -2.5
+      sphere.position.z = -15
+      this.scene.add(sphere)
     },
 
     update () {
