@@ -87,6 +87,9 @@ export default {
             o.receiveShadow = true
             o.material = stacyMtl
           }
+
+          if (o.isBone && o.name === 'mixamorigNeck') this.neck = o
+          if (o.isBone && o.name === 'mixamorigSpine') this.waist = o
         })
 
         this.model.scale.set(7, 7, 7)
@@ -98,6 +101,9 @@ export default {
         this.mixer = new THREE.AnimationMixer(this.model)
 
         const idleAnim = THREE.AnimationClip.findByName(fileAnimations, 'idle')
+
+        idleAnim.tracks.splice(3, 3)
+        idleAnim.tracks.splice(9, 3)
 
         const idle = this.mixer.clipAction(idleAnim)
         idle.play()
@@ -162,24 +168,95 @@ export default {
 
     resizeRendererToDisplaySize (renderer) {
       const canvas = this.$refs.canvas
-      const width = window.innerWidth
-      const height = window.innerHeight
-      const canvasPxWidth = canvas.width / window.devicePixelRatio
-      const canvasPxHeight = canvas.height / window.devicePixelRatio
+      if (canvas.width && canvas.height) {
+        const width = window.innerWidth
+        const height = window.innerHeight
 
-      const needResize = canvasPxWidth !== width || canvasPxHeight !== height
+        const canvasPxWidth = canvas.width / window.devicePixelRatio
+        const canvasPxHeight = canvas.height / window.devicePixelRatio
 
-      if (needResize) {
-        this.renderer.setSize(width, height, false)
+        const needResize = canvasPxWidth !== width || canvasPxHeight !== height
+
+        if (needResize) {
+          this.renderer.setSize(width, height, false)
+        }
+
+        return needResize
+      } else {
+        return false
+      }
+    },
+
+    setupMouseEvents () {
+      document.addEventListener('mousemove', e => {
+        const mousecoords = {
+          x: e.clientX,
+          y: e.clientY
+        }
+
+        if (this.neck && this.waist) {
+          this.moveJoint(mousecoords, this.neck, 50)
+          this.moveJoint(mousecoords, this.waist, 30)
+        }
+      })
+    },
+
+    moveJoint (mouse, joint, degreeLimit) {
+      const degrees = this.getMouseDegrees(mouse.x, mouse.y, degreeLimit)
+      joint.rotation.x = THREE.Math.degToRad(degrees.y)
+      joint.rotation.y = THREE.Math.degToRad(degrees.x)
+    },
+
+    getMouseDegrees (x, y, degreeLimit) {
+      let dx = 0
+      let dy = 0
+      let xdiff = 0
+      let xPercentage
+      let ydiff
+      let yPercentage
+
+      const w = { x: window.innerWidth, y: window.innerHeight }
+
+      // Left (Rotates neck left between 0 and -degreeLimit)
+      // 1. If cursor is in the left half of screen
+      if (x <= w.x / 2) {
+        // 2. Get the difference between middle of screen and cursor position
+        xdiff = w.x / 2 - x
+        // 3. Find the percentage of that difference (percentage toward edge of screen)
+        xPercentage = (xdiff / (w.x / 2)) * 100
+        // 4. Convert that to a percentage of the maximum rotation we allow for the neck
+        dx = ((degreeLimit * xPercentage) / 100) * -1
       }
 
-      return needResize
+      // Right (Rotates neck right between 0 and degreeLimit)
+      if (x >= w.x / 2) {
+        xdiff = x - w.x / 2
+        xPercentage = (xdiff / (w.x / 2)) * 100
+        dx = (degreeLimit * xPercentage) / 100
+      }
+      // Up (Rotates neck up between 0 and -degreeLimit)
+      if (y <= w.y / 2) {
+        ydiff = w.y / 2 - y
+        yPercentage = (ydiff / (w.y / 2)) * 100
+        // Note that I cut degreeLimit in half when she looks up
+        dy = (((degreeLimit * 0.5) * yPercentage) / 100) * -1
+      }
+
+      // Down (Rotates neck down between 0 and degreeLimit)
+      if (y >= w.y / 2) {
+        ydiff = y - w.y / 2
+        yPercentage = (ydiff / (w.y / 2)) * 100
+        dy = (degreeLimit * yPercentage) / 100
+      }
+
+      return { x: dx, y: dy }
     }
   },
 
   mounted () {
     this.init()
     this.update()
+    this.setupMouseEvents()
   }
 }
 </script>
