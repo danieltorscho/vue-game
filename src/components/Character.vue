@@ -2,7 +2,7 @@
   <div class="hello">
     <h1>{{ name }}</h1>
     <canvas id="canvas" ref="canvas"></canvas>
-    <!-- {{ renderer.domElement }} -->
+    <div v-if="loading" class="loading"><div class="loader"></div></div>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ export default {
       clock: new THREE.Clock(),
       currentlyAnimating: false,
       raycaster: new THREE.Raycaster(),
-      loaderAnim: null
+      loading: true
     }
   },
 
@@ -92,6 +92,8 @@ export default {
         this.model.scale.set(7, 7, 7)
         this.model.position.y = -11
         this.scene.add(this.model)
+
+        this.loading = false
       },
       undefined,
       (error) => {
@@ -175,5 +177,50 @@ export default {
 <style lang="scss" scoped>
 #canvas {
   border: 5px solid #ccc;
+}
+.loading {
+  position: fixed;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  background: #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader{
+  -webkit-perspective: 120px;
+  -moz-perspective: 120px;
+  -ms-perspective: 120px;
+  perspective: 120px;
+  width: 100px;
+  height: 100px;
+}
+
+.loader:before{
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  width: 50px;
+  height: 50px;
+  background-color: #9bffaf;
+  animation: flip 1s infinite;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotate(0);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(180deg)  rotateX(180deg);
+  }
 }
 </style>
