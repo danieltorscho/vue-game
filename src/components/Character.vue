@@ -8,12 +8,14 @@
 
 <script>
 import * as THREE from 'three'
-// import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 export default {
   name: 'Character',
   props: {
-    name: String
+    name: String,
+    modelPath: String,
+    modelSkin: String
   },
 
   data () {
@@ -39,6 +41,7 @@ export default {
       this.setupScene()
       this.setupRendered()
       this.setupCamera()
+      this.setupModel()
       this.setupLights()
       this.setupFloor()
     },
@@ -61,6 +64,39 @@ export default {
       this.camera.position.x = 0
       this.camera.position.y = -3
       this.camera.position.z = 30
+    },
+
+    setupModel () {
+      const loader = new GLTFLoader()
+
+      const stacyTxt = new THREE.TextureLoader().load(this.modelSkin)
+      stacyTxt.flipY = false
+      const stacyMtl = new THREE.MeshPhongMaterial({
+        map: stacyTxt,
+        color: 0xffffff,
+        skinning: true
+      })
+
+      loader.load(this.modelPath, (gltf) => {
+        this.model = gltf.scene
+        // const fileAnimations = gltf.animations
+
+        this.model.traverse(o => {
+          if (o.isMesh) {
+            o.castShadow = true
+            o.receiveShadow = true
+            o.material = stacyMtl
+          }
+        })
+
+        this.model.scale.set(7, 7, 7)
+        this.model.position.y = -11
+        this.scene.add(this.model)
+      },
+      undefined,
+      (error) => {
+        console.eror(error)
+      })
     },
 
     setupLights () {
