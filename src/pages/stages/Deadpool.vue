@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="debugbox">
+    <div class="debugbox" v-if="false">
       <ul>
         <li>P1.x: {{ player.position.x }}</li>
       </ul>
