@@ -15,6 +15,11 @@ const routes = [
     component: () => import('../pages/stages/Deadpool.vue')
   },
   {
+    path: '/s/brucelee',
+    name: 'Brucelee',
+    component: () => import('../pages/stages/Brucelee.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     component: () => import('../pages/About.vue')

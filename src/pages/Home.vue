@@ -1,8 +1,17 @@
 <template>
   <div class="page">
-    <router-link to="/s/deadpool">
-      Deadpool
-    </router-link>
+    <ul>
+      <li>
+        <router-link to="/s/deadpool">
+          Sub-zero from MK1 in MK2 Deadpool stage
+        </router-link>
+      </li>
+      <li>
+        <router-link to="/s/brucelee">
+          Bruce Lee in MK2 Deadpool stage
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
