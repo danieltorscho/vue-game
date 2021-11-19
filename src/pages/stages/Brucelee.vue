@@ -193,6 +193,7 @@ export default {
     },
 
     onWalkLeftPressed () {
+      if (this.state === 'crouch') return false
       if (this.state !== 'walkLeft') this.state = 'walkLeft'
       this.player.position.x -= this.player.movement.steps
     },
@@ -201,6 +202,8 @@ export default {
     },
 
     onWalkRightPressed () {
+      if (this.state === 'crouch') return false
+
       if (this.state !== 'walkRight') this.state = 'walkRight'
       this.player.position.x += this.player.movement.steps
     },
