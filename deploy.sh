@@ -1,21 +1,14 @@
-#!/usr/bin/env sh
-
-# abort on errors
-set -e
-
-rm -rf docs
-
 npm run build
 
-mv dist docs
+LOGSTRING=$(git log)
+COMMIT=$(echo $LOGSTRING | awk '{print $2}')
 
-# cd dist
+cd dist
 
-# git init
+git init
 git add -A
-git commit -m 'deploy'
-git push -f
+git commit -m "deploy (commit: $COMMIT)"
 
-# git push -f git@github.com:danieltorscho/vue-game.git main:gh-pages
+git push -f https://github.com/danieltorscho/vue-game.git master:gh-pages
 
-# cd -
+cd ..
